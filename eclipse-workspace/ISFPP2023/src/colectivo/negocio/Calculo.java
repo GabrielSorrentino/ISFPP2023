@@ -23,8 +23,9 @@ public class Calculo {
 	private Graph<Parada, ParadaLinea> red;
 	private TreeMap<Integer, Parada> paradaMap;
 	private TreeMap<String, Tramo> tramoMap;
+	private static Calculo instancia = null;
 
-	public Calculo(TreeMap<Integer, Parada> paradaMap, TreeMap<String, Linea> lineaMap, List<Tramo> tramos) {
+	private Calculo(TreeMap<Integer, Parada> paradaMap, TreeMap<String, Linea> lineaMap, List<Tramo> tramos) {
 		// Map paradas
 		this.paradaMap = paradaMap;
 
@@ -64,8 +65,18 @@ public class Calculo {
 			}
 	}
 
-	public List<List<Tramo>> recorridos1(Parada paradaOrigen, Parada paradaDestino, int horario, int nroLineas) {
+	public static Calculo crearInstancia(TreeMap<Integer, Parada> paradaMap, TreeMap<String, Linea> lineaMap, List<Tramo> tramos) {
+		instancia = new Calculo(paradaMap, lineaMap, tramos);
+		return instancia;
+	}
 
+	public static Calculo getInstancia() {
+		return instancia;
+	}
+
+	public List<List<Tramo>> recorridos(String IDOrigen, String IDDestino, int horario, int nroLineas) {
+		Parada paradaOrigen = paradaMap.get(Integer.parseInt(IDOrigen));
+		Parada paradaDestino = paradaMap.get(Integer.parseInt(IDDestino));
 		// Todos los recorridos
 		YenKShortestPath<Parada, ParadaLinea> yksp = new YenKShortestPath<Parada, ParadaLinea>(red);
 		List<GraphPath<Parada, ParadaLinea>> caminos = yksp.getPaths(paradaOrigen, paradaDestino, Integer.MAX_VALUE);
@@ -124,50 +135,6 @@ public class Calculo {
 		return listaTramos;
 	}
 
-	private Graph<Parada, ParadaLinea> grafoRecorrido(Parada paradaOrigen, Parada paradaDestino){
-		
-		Set<ParadaLinea> paradaLineas = new HashSet<ParadaLinea>();
-		paradaLineas.addAll(red.outgoingEdgesOf(paradaOrigen));
-		paradaLineas.addAll(red.incomingEdgesOf(paradaDestino));
-		
-		Set <Linea> lineas = new HashSet<Linea>(); 
-		for (ParadaLinea p: paradaLineas)
-			lineas.add(p.getLinea());
-		
-		Graph<Parada, ParadaLinea> recorrido = new DirectedMultigraph<>(null, null, false);
-
-		// Cargar paradas
-		for (Parada p : paradaMap.values())
-			recorrido.addVertex(p);
-
-		// Cargar tramos lineas
-		Parada origen, destino;
-		for (Linea l : lineas) {
-			for (int i = 0; i < l.getParadasIda().size() - 1; i++) {
-				origen = l.getParadasIda().get(i);
-				destino = l.getParadasIda().get(i + 1);
-				recorrido.addEdge(origen, destino, new ParadaLinea(origen, l));
-			}
-			for (int i = 0; i < l.getParadasRegreso().size() - 1; i++) {
-				origen = l.getParadasRegreso().get(i);
-				destino = l.getParadasRegreso().get(i + 1);
-				recorrido.addEdge(origen, destino, new ParadaLinea(origen, l));
-			}
-		}
-
-		// Cargar tramos caminando
-		Linea linea;
-		for (Tramo t : tramoMap.values())
-			if (t.getTipo() == Constantes.TRAMO_CAMINANDO) {
-				linea = new Linea(t.getInicio().getId() + "-" + t.getFin().getId(), Time.toMins("00:00"),
-						Time.toMins("24:00"), 0);
-				recorrido.addEdge(t.getInicio(), t.getFin(), new ParadaLinea(t.getInicio(), linea));
-			}
-
-		
-		return recorrido;
-	}
-	
 	private int proximoColectivo(Linea linea, Parada parada, int horario) {
 		boolean ida;
 		int nroParada = linea.getParadasIda().indexOf(parada);
@@ -208,9 +175,6 @@ public class Calculo {
 				return j + tiempo;
 
 		return -1;
-	}
-	public void CosasQueHacer() {
-		
 	}
 
 	private class ParadaLinea {

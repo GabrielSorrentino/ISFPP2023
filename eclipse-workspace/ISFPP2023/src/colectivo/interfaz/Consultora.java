@@ -24,8 +24,10 @@ public class Consultora extends JDialog {
 	private JTextField txtSegundaParada;
 	private JTextField txtHora;
 	private Coordinador coord;
+	private int totalLineas; //cantidad de lineas por defecto
 	
-	public Consultora() {
+	public Consultora(int totalLineas) {
+		this.totalLineas = totalLineas;
 		setBounds(100, 100, 450, 300);
 		setTitle("Consultas");
 		
@@ -125,7 +127,7 @@ public class Consultora extends JDialog {
 	private void mostrarResultado(String IDactual, String IDdestino, String hora) {
 		Calculo c = coord.getCalculo();
 		String respuesta = "";
-		List<String> unaLista = c.lineasPasan(IDactual, IDdestino);
+		List<List<Tramo>> matriz = c.recorridos(IDactual, IDdestino, Time.toMins(hora), totalLineas);
 	}
 
 }

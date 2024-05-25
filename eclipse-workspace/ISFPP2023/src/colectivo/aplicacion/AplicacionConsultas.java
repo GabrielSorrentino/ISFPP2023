@@ -44,8 +44,8 @@ public class AplicacionConsultas {
 
 
 		IGU igu = new IGU();
-		Consultora consultora = new Consultora();
-		Calculo calculo = new Calculo(paradas, lineas, tramos);
+		Consultora consultora = new Consultora(lineas.size());
+		Calculo calculo = Calculo.crearInstancia(paradas, lineas, tramos);
 		Coordinador coord = new Coordinador();
 		coord.setIgu(igu);
 		coord.setCalculo(calculo);
