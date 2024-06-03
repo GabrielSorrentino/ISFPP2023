@@ -98,7 +98,7 @@ public class IGU extends JFrame {
 		//imagen de colectivo como decoracion
 		JLabel imagen = new JLabel();
 		ImageIcon foto = new ImageIcon(getClass().getResource("colectivo.jpeg"));
-		ImageIcon colectivo = new ImageIcon(foto.getImage().getScaledInstance(imagen.getWidth(), imagen.getHeight(), Image.SCALE_SMOOTH));
+		ImageIcon colectivo = new ImageIcon(foto.getImage().getScaledInstance(foto.getIconWidth(), foto.getIconHeight(), Image.SCALE_SMOOTH));
 		imagen.setIcon(colectivo);
 		getContentPane().add(imagen);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
