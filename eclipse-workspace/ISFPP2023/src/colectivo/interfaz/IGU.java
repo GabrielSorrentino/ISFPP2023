@@ -40,10 +40,10 @@ public class IGU extends JFrame {
 		mntmCreditos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, "Instancia Supervisada de Formacion Practica y Profesional\n"
-						+ "Materia: Programacion Orientada a Objetos"
+						+ "Materia: Programacion Orientada a Objetos\n"
 						+ "Autor: Gabriel Sorrentino\n"
-						+ "Carreras: Analista Programador Universitario, Licenciatura en Informática"
-						+ "Profesores: Renato Mazzanti, Gustavo Samec"
+						+ "Carreras: Analista Programador Universitario, Licenciatura en Informática\n"
+						+ "Profesores: Renato Mazzanti, Gustavo Samec\n"
 						+ "Fecha: 20 de marzo de 2024");
 			}
 		});
@@ -96,34 +96,38 @@ public class IGU extends JFrame {
 		lblPOO.setFont(new Font("Arial", Font.BOLD, 13));
 		
 		//imagen de colectivo como decoracion
-		JLabel imagen = new JLabel();
-		ImageIcon foto = new ImageIcon(getClass().getResource("colectivo.jpeg"));
-		ImageIcon colectivo = new ImageIcon(foto.getImage().getScaledInstance(foto.getIconWidth(), foto.getIconHeight(), Image.SCALE_SMOOTH));
-		imagen.setIcon(colectivo);
-		getContentPane().add(imagen);
-		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+				ImageIcon foto = new ImageIcon(getClass().getResource("colectivo.jpeg"));
+				JLabel lblColectivo = new JLabel();
+				lblColectivo.setIcon(foto);
+				
+				GroupLayout gl_contentPane = new GroupLayout(contentPane);
+				gl_contentPane.setHorizontalGroup(
+					gl_contentPane.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addContainerGap()
+									.addComponent(lblISFPP))
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGap(118)
+									.addComponent(lblPOO))
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGap(97)
+									.addComponent(lblColectivo)))
+							.addContainerGap(23, Short.MAX_VALUE))
+				);
+				gl_contentPane.setVerticalGroup(
+					gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(lblISFPP))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGap(118)
-							.addComponent(lblPOO)))
-					.addContainerGap(33, Short.MAX_VALUE))
-		);
-		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(lblISFPP)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblPOO)
-					.addContainerGap(187, Short.MAX_VALUE))
-		);
-		contentPane.setLayout(gl_contentPane);
+							.addComponent(lblISFPP)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblPOO)
+							.addGap(18)
+							.addComponent(lblColectivo)
+							.addContainerGap(59, Short.MAX_VALUE))
+				);
+				contentPane.setLayout(gl_contentPane);
 	}
 	public void setCoordinador(Coordinador coord) {
 		this.coord = coord;
