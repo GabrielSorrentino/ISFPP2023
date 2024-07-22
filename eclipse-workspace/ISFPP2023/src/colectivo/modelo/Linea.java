@@ -2,6 +2,7 @@ package colectivo.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import colectivo.util.Time;
 
 public class Linea {
 
@@ -100,6 +101,8 @@ public class Linea {
 	@Override
 	public String toString() {
 		return nombre;
-	}	
-	
+	}
+	public String toStringExtendido() {
+		return nombre + " -- " + Time.toTime(comienza) + " -- " + Time.toTime(finaliza) + " -- " + frecuencia;
+	}
 }

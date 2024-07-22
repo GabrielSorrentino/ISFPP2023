@@ -18,6 +18,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import colectivo.aplicacion.Coordinador;
+import colectivo.util.Time;
+import colectivo.modelo.Linea;
+import colectivo.modelo.Parada;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class IGU extends JFrame {
 	
@@ -26,7 +32,7 @@ public class IGU extends JFrame {
 	private JPanel contentPane;
 	private Coordinador coord;
 
-	public IGU() {
+	public IGU(Map<String, Linea> lineas, Map<Integer, Parada> paradas) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 485, 300);
 		
@@ -62,6 +68,8 @@ public class IGU extends JFrame {
 		});
 		mnPrograma.add(mntmSalir);
 		
+		Informacion info = new Informacion(lineas, paradas); //instancia para mostrar informacion de paradas y lineas
+		
 		JMenu mnConsultas = new JMenu("Consultas");
 		menuBar.add(mnConsultas);
 		
@@ -76,12 +84,18 @@ public class IGU extends JFrame {
 		JMenuItem mntmVerParadas = new JMenuItem("Ver paradas");
 		mntmVerParadas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//anadir metodo para mostrar paradas
+				JOptionPane.showMessageDialog(null, info.mostrarParadas()); //muestra lista de paradas con las lineas que pasan por ellas
 			}
 		});
 		mnConsultas.add(mntmVerParadas);
 		
 		JMenuItem mntmVerLineas = new JMenuItem("Ver lineas");
+		mntmVerLineas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, info.mostrarLineas()); //muestra lista de lineas
+			}
+		});
+		
 		mnConsultas.add(mntmVerLineas);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,41 +110,64 @@ public class IGU extends JFrame {
 		lblPOO.setFont(new Font("Arial", Font.BOLD, 13));
 		
 		//imagen de colectivo como decoracion
-				ImageIcon foto = new ImageIcon(getClass().getResource("colectivo.jpeg"));
-				JLabel lblColectivo = new JLabel();
-				lblColectivo.setIcon(foto);
-				
-				GroupLayout gl_contentPane = new GroupLayout(contentPane);
-				gl_contentPane.setHorizontalGroup(
-					gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_contentPane.createSequentialGroup()
-									.addContainerGap()
-									.addComponent(lblISFPP))
-								.addGroup(gl_contentPane.createSequentialGroup()
-									.addGap(118)
-									.addComponent(lblPOO))
-								.addGroup(gl_contentPane.createSequentialGroup()
-									.addGap(97)
-									.addComponent(lblColectivo)))
-							.addContainerGap(23, Short.MAX_VALUE))
-				);
-				gl_contentPane.setVerticalGroup(
-					gl_contentPane.createParallelGroup(Alignment.LEADING)
+		ImageIcon foto = new ImageIcon(getClass().getResource("colectivo.jpeg"));
+		JLabel lblColectivo = new JLabel();
+		lblColectivo.setIcon(foto);
+
+		GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(lblISFPP)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblPOO)
-							.addGap(18)
-							.addComponent(lblColectivo)
-							.addContainerGap(59, Short.MAX_VALUE))
-				);
-				contentPane.setLayout(gl_contentPane);
+							.addComponent(lblISFPP))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(118)
+							.addComponent(lblPOO))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(97)
+							.addComponent(lblColectivo)))
+					.addContainerGap(23, Short.MAX_VALUE))
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblISFPP)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblPOO)
+					.addGap(18)
+					.addComponent(lblColectivo)
+					.addContainerGap(59, Short.MAX_VALUE))
+		);
+		contentPane.setLayout(gl_contentPane);
 	}
 	public void setCoordinador(Coordinador coord) {
 		this.coord = coord;
 	}
 
+	//clase interna para mostrar la informacion de las lineas y las paradas
+	private class Informacion {
+		private List<Linea> lineas;
+		private List<Parada> paradas;
+		public Informacion(Map<String, Linea> lMap, Map<Integer, Parada> pMap) {
+			this.lineas = new ArrayList<>(lMap.values());
+			this.paradas = new ArrayList<>(pMap.values());
+		}
+		public String mostrarLineas() {
+			StringBuilder sb = new StringBuilder("Nombre -- Hora a la que comienza -- Hora a la que finaliza -- Frecuencia (en minutos)\n"
+					+ ">>Paradas en el recorrido de ida\n<<Paradas en el recorrido de regreso\n\n");
+			for (Linea l: lineas) {
+				sb.append(l.toStringExtendido());
+			}
+			return sb.toString();
+		}
+		public String mostrarParadas() {
+			StringBuilder sb = new StringBuilder("ID -- Direccion -- Latitud -- Longitud -- Lineas que pasan por la parada\n");
+			for (Parada p : paradas)
+				sb.append(p.datosParadaSeparados() + "\n");
+			return sb.toString();
+		}
+	}
 }

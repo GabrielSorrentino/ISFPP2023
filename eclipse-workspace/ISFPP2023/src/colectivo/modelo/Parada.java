@@ -26,6 +26,10 @@ public class Parada {
 		this.lineas = new ArrayList<Linea>();
 	}
 	
+	public void agregarLinea(Linea linea) {
+		this.lineas.add(linea);
+	}
+	
 	public void setLng(double lng) {
 		this.lng = lng;
 	}
@@ -40,10 +44,6 @@ public class Parada {
 	
 	public double getLat() {
 		return this.lat;
-	}
-	
-	public void agregarLinea(Linea linea) {
-		this.lineas.add(linea);
 	}
 	
 	public int getId() {
@@ -91,8 +91,10 @@ public class Parada {
 	@Override
 	public String toString() {
 		return "Parada [id=" + id + ", direccion=" + direccion + "]";
-	}	
+	}
 	
-	
+	public String datosParadaSeparados() {
+		return id + " -- " + direccion + " -- " + lat + " -- " + lng + " -- " + lineas.toString() + "]\n";
+	}
 	
 }

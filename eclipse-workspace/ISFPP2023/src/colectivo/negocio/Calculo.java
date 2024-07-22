@@ -1,11 +1,10 @@
 package colectivo.negocio;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
+import java.util.TreeMap;
+import java.util.Map;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.YenKShortestPath;
@@ -16,16 +15,15 @@ import colectivo.modelo.Linea;
 import colectivo.modelo.Parada;
 import colectivo.modelo.Tramo;
 import colectivo.util.Time;
-import net.datastructures.TreeMap;
 
 public class Calculo {
 
 	private Graph<Parada, ParadaLinea> red;
-	private TreeMap<Integer, Parada> paradaMap;
-	private TreeMap<String, Tramo> tramoMap;
+	private Map<Integer, Parada> paradaMap;
+	private Map<String, Tramo> tramoMap;
 	private static Calculo instancia = null;
 
-	private Calculo(TreeMap<Integer, Parada> paradaMap, TreeMap<String, Linea> lineaMap, List<Tramo> tramos) {
+	private Calculo(Map<Integer, Parada> paradaMap, Map<String, Linea> lineaMap, List<Tramo> tramos) {
 		// Map paradas
 		this.paradaMap = paradaMap;
 
@@ -65,7 +63,7 @@ public class Calculo {
 			}
 	}
 
-	public static Calculo crearInstancia(TreeMap<Integer, Parada> paradaMap, TreeMap<String, Linea> lineaMap, List<Tramo> tramos) {
+	public static Calculo crearInstancia(Map<Integer, Parada> paradaMap, Map<String, Linea> lineaMap, List<Tramo> tramos) {
 		instancia = new Calculo(paradaMap, lineaMap, tramos);
 		return instancia;
 	}
@@ -82,21 +80,23 @@ public class Calculo {
 		List<GraphPath<Parada, ParadaLinea>> caminos = yksp.getPaths(paradaOrigen, paradaDestino, Integer.MAX_VALUE);
 
 		// Eliminar recorridos superan cambioLineas
-		List<Linea> lineas;
-		Iterator<GraphPath<Parada, ParadaLinea>> r = caminos.iterator();
-		while (r.hasNext()) {
-			lineas = new ArrayList<Linea>();
-			int cambioLineas = 0;
-			for (ParadaLinea pl : r.next().getEdgeList())
-				if (lineas.isEmpty())
-					lineas.add(pl.getLinea());
-				else if (!lineas.get(lineas.size() - 1).equals(pl.getLinea()))
-					lineas.add(pl.getLinea());
-			for (Linea l : lineas)
-				if (l.getFrecuencia() != 0)
-					cambioLineas++;
-			if (cambioLineas > nroLineas)
-				r.remove();
+		if (nroLineas != -1) {
+			List<Linea> lineas;
+			Iterator<GraphPath<Parada, ParadaLinea>> r = caminos.iterator();
+			while (r.hasNext()) {
+				lineas = new ArrayList<Linea>();
+				int cambioLineas = 0;
+				for (ParadaLinea pl : r.next().getEdgeList())
+					if (lineas.isEmpty())
+						lineas.add(pl.getLinea());
+					else if (!lineas.get(lineas.size() - 1).equals(pl.getLinea()))
+						lineas.add(pl.getLinea());
+				for (Linea l : lineas)
+					if (l.getFrecuencia() != 0)
+						cambioLineas++;
+				if (cambioLineas > nroLineas)
+					r.remove();
+			}
 		}
 
 		// Realizar calculo de tiempo y preparar resultados
@@ -109,7 +109,7 @@ public class Calculo {
 		List<Parada> paradas;
 		Parada origen = null;
 		Parada destino = null;
-		TreeMap<Integer, Parada> pMap;
+		Map<Integer, Parada> pMap;
 		for (GraphPath<Parada, ParadaLinea> gp : caminos) {
 			pMap = new TreeMap<Integer, Parada>();
 			paradas = gp.getVertexList();

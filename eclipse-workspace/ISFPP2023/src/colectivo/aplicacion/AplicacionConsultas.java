@@ -3,7 +3,7 @@ package colectivo.aplicacion;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
+import java.util.Map;
 import colectivo.datos.CargaDatos;
 import colectivo.datos.CargaParametros;
 import colectivo.interfaz.IGU;
@@ -12,11 +12,10 @@ import colectivo.modelo.Linea;
 import colectivo.modelo.Parada;
 import colectivo.modelo.Tramo;
 import colectivo.negocio.Calculo;
-import net.datastructures.TreeMap;
 
 public class AplicacionConsultas {
 
-	public static void main(String[] args) {
+	public static void main(String[] argv) {
 
 		// Cargar parametros
 		try {
@@ -27,8 +26,8 @@ public class AplicacionConsultas {
 		}
 
 		// Cargar datos
-		TreeMap<String, Linea> lineas = null;
-		TreeMap<Integer, Parada> paradas = null;
+		Map<String, Linea> lineas = null;
+		Map<Integer, Parada> paradas = null;
 		List<Tramo> tramos = null;
 		try {
 			paradas = CargaDatos.cargarParadas(CargaParametros.getArchivoParada());
@@ -43,7 +42,7 @@ public class AplicacionConsultas {
 		}
 
 
-		IGU igu = new IGU();
+		IGU igu = new IGU(lineas, paradas);
 		Consultora consultora = new Consultora(lineas.size());
 		Calculo calculo = Calculo.crearInstancia(paradas, lineas, tramos);
 		Coordinador coord = new Coordinador();

@@ -5,21 +5,21 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+import java.util.TreeMap;
+import java.util.Map;
 import colectivo.modelo.Linea;
 import colectivo.modelo.Parada;
 import colectivo.modelo.Tramo;
 import colectivo.util.Time;
-import net.datastructures.TreeMap;
 
 public class CargaDatos {
 
 	private static final String IDA = "I";
 	private static final String REGRESO = "R";
 	
-	public static TreeMap<Integer, Parada> cargarParadas(String fileName) throws FileNotFoundException {
+	public static Map<Integer, Parada> cargarParadas(String fileName) throws FileNotFoundException {
 		Scanner read;
-		TreeMap<Integer, Parada> paradas = new TreeMap<Integer, Parada>();
+		Map<Integer, Parada> paradas = new TreeMap<Integer, Parada>();
 
 		read = new Scanner(new File(fileName));
 		int id;
@@ -41,7 +41,7 @@ public class CargaDatos {
 		return paradas;
 	}
 
-	public static List<Tramo> cargarTramos(String fileName, TreeMap<Integer, Parada> paradas)
+	public static List<Tramo> cargarTramos(String fileName, Map<Integer, Parada> paradas)
 			throws FileNotFoundException {
 		Scanner read;
 		List<Tramo> tramos = new ArrayList<Tramo>();
@@ -62,11 +62,11 @@ public class CargaDatos {
 		return tramos;
 	}
 
-	public static TreeMap<String, Linea> cargarLineas(String fileName, TreeMap<Integer, Parada> paradas)
+	public static Map<String, Linea> cargarLineas(String fileName, Map<Integer, Parada> paradas)
 			throws FileNotFoundException {
 		Scanner read;
 
-		TreeMap<String, Linea> lineas = new TreeMap<String, Linea>();
+		Map<String, Linea> lineas = new TreeMap<String, Linea>();
 
 		read = new Scanner(new File(fileName));
 		String registro;
