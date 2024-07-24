@@ -68,8 +68,6 @@ public class IGU extends JFrame {
 		});
 		mnPrograma.add(mntmSalir);
 		
-		Informacion info = new Informacion(lineas, paradas); //instancia para mostrar informacion de paradas y lineas
-		
 		JMenu mnConsultas = new JMenu("Consultas");
 		menuBar.add(mnConsultas);
 		
@@ -84,7 +82,7 @@ public class IGU extends JFrame {
 		JMenuItem mntmVerParadas = new JMenuItem("Ver paradas");
 		mntmVerParadas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, info.mostrarParadas()); //muestra lista de paradas con las lineas que pasan por ellas
+				//operacion para mostrar paradas
 			}
 		});
 		mnConsultas.add(mntmVerParadas);
@@ -92,7 +90,7 @@ public class IGU extends JFrame {
 		JMenuItem mntmVerLineas = new JMenuItem("Ver lineas");
 		mntmVerLineas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, info.mostrarLineas()); //muestra lista de lineas
+				//operacion para mostrar lineas
 			}
 		});
 		
@@ -147,27 +145,4 @@ public class IGU extends JFrame {
 		this.coord = coord;
 	}
 
-	//clase interna para mostrar la informacion de las lineas y las paradas
-	private class Informacion {
-		private List<Linea> lineas;
-		private List<Parada> paradas;
-		public Informacion(Map<String, Linea> lMap, Map<Integer, Parada> pMap) {
-			this.lineas = new ArrayList<>(lMap.values());
-			this.paradas = new ArrayList<>(pMap.values());
-		}
-		public String mostrarLineas() {
-			StringBuilder sb = new StringBuilder("Nombre -- Hora a la que comienza -- Hora a la que finaliza -- Frecuencia (en minutos)\n"
-					+ ">>Paradas en el recorrido de ida\n<<Paradas en el recorrido de regreso\n\n");
-			for (Linea l: lineas) {
-				sb.append(l.toStringExtendido());
-			}
-			return sb.toString();
-		}
-		public String mostrarParadas() {
-			StringBuilder sb = new StringBuilder("ID -- Direccion -- Latitud -- Longitud -- Lineas que pasan por la parada\n");
-			for (Parada p : paradas)
-				sb.append(p.datosParadaSeparados() + "\n");
-			return sb.toString();
-		}
-	}
 }

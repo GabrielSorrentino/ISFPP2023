@@ -8,6 +8,7 @@ import colectivo.datos.CargaDatos;
 import colectivo.datos.CargaParametros;
 import colectivo.interfaz.IGU;
 import colectivo.interfaz.Consultora;
+import colectivo.interfaz.Pantalla;
 import colectivo.modelo.Linea;
 import colectivo.modelo.Parada;
 import colectivo.modelo.Tramo;
@@ -44,6 +45,7 @@ public class AplicacionConsultas {
 
 		IGU igu = new IGU(lineas, paradas);
 		Consultora consultora = new Consultora(lineas.size());
+		Pantalla.crearInstancia(lineas, paradas);
 		Calculo calculo = Calculo.crearInstancia(paradas, lineas, tramos);
 		Coordinador coord = new Coordinador();
 		coord.setIgu(igu);

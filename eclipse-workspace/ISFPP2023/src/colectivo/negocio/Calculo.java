@@ -72,9 +72,7 @@ public class Calculo {
 		return instancia;
 	}
 
-	public List<List<Tramo>> recorridos(String IDOrigen, String IDDestino, int horario, int nroLineas) {
-		Parada paradaOrigen = paradaMap.get(Integer.parseInt(IDOrigen));
-		Parada paradaDestino = paradaMap.get(Integer.parseInt(IDDestino));
+	public List<List<Tramo>> recorridos(Parada paradaOrigen, Parada paradaDestino, int horario, int nroLineas) {
 		// Todos los recorridos
 		YenKShortestPath<Parada, ParadaLinea> yksp = new YenKShortestPath<Parada, ParadaLinea>(red);
 		List<GraphPath<Parada, ParadaLinea>> caminos = yksp.getPaths(paradaOrigen, paradaDestino, Integer.MAX_VALUE);

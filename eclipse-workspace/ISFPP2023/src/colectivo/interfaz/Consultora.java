@@ -24,10 +24,12 @@ public class Consultora extends JDialog {
 	private JTextField txtSegundaParada;
 	private JTextField txtHora;
 	private Coordinador coord;
+	private Pantalla pantalla;
 	private int totalLineas; //cantidad de lineas por defecto
 	
 	public Consultora(int totalLineas) {
 		this.totalLineas = totalLineas;
+		this.pantalla = Pantalla.getInstancia();
 		setBounds(100, 100, 450, 300);
 		setTitle("Consultas");
 		
@@ -111,23 +113,21 @@ public class Consultora extends JDialog {
 	public void setCoordinador(Coordinador coord) {
 		this.coord = coord;
 	}
-	private void calcularTramo(String PraParada, String SdaParada, String hora) {
-		try { //verifica que los ID ingresados sean numeros y la hora haya sido ingresada bien
-			Integer.parseInt(PraParada);
-			Integer.parseInt(SdaParada);
-			Time.toMins(hora);
-			mostrarResultado(PraParada, SdaParada, hora);
-		}
-		catch (Exception e) {
+	protected void calcularTramo(String PraParada, String SdaParada, String hora) {
+		Parada origen, destino;
+		int horario;
+		Calculo c = Calculo.getInstancia();
+		List<List<Tramo>> recorridos;
+		try {
+			origen = pantalla.obtenerParada(Integer.parseInt(PraParada));
+			destino = pantalla.obtenerParada(Integer.parseInt(SdaParada));
+			horario = Time.toMins(hora);
+		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Alguno de los valores fue ingresado incorrectamente.\n"
 					+ "Intente de nuevo.");
 			return;
 		}
+		recorridos = c.recorridos(origen, destino, horario, totalLineas);
 	}
-	private void mostrarResultado(String IDactual, String IDdestino, String hora) {
-		Calculo c = coord.getCalculo();
-		String respuesta = "";
-		List<List<Tramo>> matriz = c.recorridos(IDactual, IDdestino, Time.toMins(hora), totalLineas);
-	}
-
+	
 }
