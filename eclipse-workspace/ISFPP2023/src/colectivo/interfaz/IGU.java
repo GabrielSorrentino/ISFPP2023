@@ -18,12 +18,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import colectivo.aplicacion.Coordinador;
-import colectivo.util.Time;
-import colectivo.modelo.Linea;
-import colectivo.modelo.Parada;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import colectivo.aplicacion.Constantes;
 
 public class IGU extends JFrame {
 	
@@ -31,10 +26,13 @@ public class IGU extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Coordinador coord;
+	private Pantalla p;
 
-	public IGU(Map<String, Linea> lineas, Map<Integer, Parada> paradas) {
+	public IGU() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 485, 300);
+		
+		p = Pantalla.getInstancia();
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -45,12 +43,7 @@ public class IGU extends JFrame {
 		JMenuItem mntmCreditos = new JMenuItem("Creditos");
 		mntmCreditos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "Instancia Supervisada de Formacion Practica y Profesional\n"
-						+ "Materia: Programacion Orientada a Objetos\n"
-						+ "Autor: Gabriel Sorrentino\n"
-						+ "Carreras: Analista Programador Universitario, Licenciatura en Informática\n"
-						+ "Profesores: Renato Mazzanti, Gustavo Samec\n"
-						+ "Fecha: 20 de marzo de 2024");
+				JOptionPane.showMessageDialog(null, Constantes.CREDITOS);
 			}
 		});
 		mnPrograma.add(mntmCreditos);
@@ -58,7 +51,7 @@ public class IGU extends JFrame {
 		JMenuItem mntmSalir = new JMenuItem("Salir");
 		mntmSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int confirmacion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que quieres salir?",
+				int confirmacion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que queres salir?",
                         "Confirmación", JOptionPane.YES_NO_OPTION);
                 if (confirmacion == JOptionPane.YES_OPTION) {
                     dispose();
@@ -82,7 +75,7 @@ public class IGU extends JFrame {
 		JMenuItem mntmVerParadas = new JMenuItem("Ver paradas");
 		mntmVerParadas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//operacion para mostrar paradas
+				p.mostrarParadas();
 			}
 		});
 		mnConsultas.add(mntmVerParadas);
@@ -90,7 +83,7 @@ public class IGU extends JFrame {
 		JMenuItem mntmVerLineas = new JMenuItem("Ver lineas");
 		mntmVerLineas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//operacion para mostrar lineas
+				p.mostrarLineas();
 			}
 		});
 		

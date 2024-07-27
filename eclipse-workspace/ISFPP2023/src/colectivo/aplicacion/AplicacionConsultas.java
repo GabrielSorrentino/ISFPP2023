@@ -16,37 +16,37 @@ import colectivo.negocio.Calculo;
 
 public class AplicacionConsultas {
 
+	Map<String, Linea> lineas;
+	Map<Integer, Parada> paradas;
+	List<Tramo> tramos;
+	
 	public static void main(String[] argv) {
-
-		// Cargar parametros
-		try {
+		AplicacionConsultas apl = new AplicacionConsultas();
+		apl.cargarDatos();
+		apl.iniciar();
+	}
+	
+	public void cargarDatos() {
+		try { // Cargar parametros
 			CargaParametros.parametros();
 		} catch (IOException e) {
 			System.err.print(Constantes.ERROR_PARAMETROS);
 			System.exit(-1);
 		}
-
-		// Cargar datos
-		Map<String, Linea> lineas = null;
-		Map<Integer, Parada> paradas = null;
-		List<Tramo> tramos = null;
-		try {
+		try { // Cargar datos
 			paradas = CargaDatos.cargarParadas(CargaParametros.getArchivoParada());
-
 			tramos = CargaDatos.cargarTramos(CargaParametros.getArchivoTramo(), paradas);
-
 			lineas = CargaDatos.cargarLineas(CargaParametros.getArchivoLinea(), paradas);
-
 		} catch (FileNotFoundException e) {
 			System.err.print(Constantes.ERROR_ARCHIVOS);
 			System.exit(-1);
 		}
-
-
-		IGU igu = new IGU(lineas, paradas);
-		Consultora consultora = new Consultora(lineas.size());
-		Pantalla.crearInstancia(lineas, paradas);
+	}
+	public void iniciar() { //instancias
+		Pantalla.crearInstancia(lineas, paradas); //el orden en que se instancian estos objetos es importante
 		Calculo calculo = Calculo.crearInstancia(paradas, lineas, tramos);
+		IGU igu = new IGU();
+		Consultora consultora = new Consultora(lineas.size());
 		Coordinador coord = new Coordinador();
 		coord.setIgu(igu);
 		coord.setCalculo(calculo);
@@ -56,5 +56,4 @@ public class AplicacionConsultas {
 		try {igu.setVisible(true);}
 		catch (Exception e) {e.printStackTrace();}
 	}
-
 }

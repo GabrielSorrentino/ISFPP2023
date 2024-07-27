@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import colectivo.util.Time;
 import colectivo.aplicacion.Coordinador;
+import colectivo.aplicacion.Constantes;
 import colectivo.modelo.*;
 import colectivo.negocio.Calculo;
 import java.util.List;
@@ -24,12 +25,10 @@ public class Consultora extends JDialog {
 	private JTextField txtSegundaParada;
 	private JTextField txtHora;
 	private Coordinador coord;
-	private Pantalla pantalla;
-	private int totalLineas; //cantidad de lineas por defecto
+	private int totalLineas; //cantidad total de lineas por defecto
 	
 	public Consultora(int totalLineas) {
 		this.totalLineas = totalLineas;
-		this.pantalla = Pantalla.getInstancia();
 		setBounds(100, 100, 450, 300);
 		setTitle("Consultas");
 		
@@ -117,17 +116,50 @@ public class Consultora extends JDialog {
 		Parada origen, destino;
 		int horario;
 		Calculo c = Calculo.getInstancia();
-		List<List<Tramo>> recorridos;
+		Pantalla pantalla = Pantalla.getInstancia();
 		try {
 			origen = pantalla.obtenerParada(Integer.parseInt(PraParada));
-			destino = pantalla.obtenerParada(Integer.parseInt(SdaParada));
-			horario = Time.toMins(hora);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Alguno de los valores fue ingresado incorrectamente.\n"
-					+ "Intente de nuevo.");
+			JOptionPane.showMessageDialog(null, Constantes.ERROR_PRIMERA_PARADA);
 			return;
 		}
-		recorridos = c.recorridos(origen, destino, horario, totalLineas);
+		try {
+			destino = pantalla.obtenerParada(Integer.parseInt(SdaParada));
+		} catch(Exception e) {
+			JOptionPane.showMessageDialog(null, Constantes.ERROR_SEGUNDA_PARADA);
+			return;
+		}
+		if (origen.equals(destino)) {
+			JOptionPane.showMessageDialog(null, Constantes.ERROR_PARADAS_IGUALES);
+			return;
+		}
+		try {
+			horario = Time.toMins(hora);
+		} catch(Exception e) {
+			JOptionPane.showMessageDialog(null, Constantes.ERROR_HORA);
+			return;
+		}
+		List<List<Tramo>> recorridos = c.recorridos(origen, destino, horario, totalLineas);
+		if (recorridos.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "¡Oh, no! No se encontraron recorridos posibles.");
+	        return;
+		}
+		StringBuilder infoRecorridos = new StringBuilder("Recorridos posibles:\n");
+		for (List<Tramo> recorrido : recorridos) {
+            infoRecorridos.append("Recorrido:\n");
+            for (Tramo tramo : recorrido) {
+                String lineaNombre = tramo.getTipo() == 2 ? tramo.getInicio().getLineas().get(0).getNombre() : "Caminando";
+                infoRecorridos.append(String.format("De %s a %s en %s, tiempo estimado: %d minutos\n",
+                    tramo.getInicio().getDireccion(),
+                    tramo.getFin().getDireccion(),
+                    lineaNombre,
+                    tramo.getTiempo()
+                ));
+            }
+            infoRecorridos.append("\n");
+        }
+
+        JOptionPane.showMessageDialog(null, infoRecorridos.toString());
 	}
 	
 }

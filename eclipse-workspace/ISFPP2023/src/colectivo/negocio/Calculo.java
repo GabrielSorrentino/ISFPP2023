@@ -71,7 +71,9 @@ public class Calculo {
 	public static Calculo getInstancia() {
 		return instancia;
 	}
-
+	/**@Param parada de origen (donde se encuentra el usuario), parada de destino, horario y cantidad de lineas
+	 * @returns List<List<Tramo>>: Matriz dinamica con los tramos que van de la parada de origen al destino
+	**/
 	public List<List<Tramo>> recorridos(Parada paradaOrigen, Parada paradaDestino, int horario, int nroLineas) {
 		// Todos los recorridos
 		YenKShortestPath<Parada, ParadaLinea> yksp = new YenKShortestPath<Parada, ParadaLinea>(red);
@@ -175,6 +177,7 @@ public class Calculo {
 		return -1;
 	}
 
+	//clase compuesta utilizada para hacer el grafo, que asocia a una parada y una linea entre si
 	private class ParadaLinea {
 		private Parada parada;
 		private Linea linea;
